@@ -99,7 +99,7 @@ export default function FirstPost() {
   <li> 페이지 전환 사이에 노란색 배경이 지속되는 것을 볼 수 있습니다.</li>
 </ul>
 - 이는 브라우저가 전체 페이지를 로드하지 않고 클라이언트 사이드 네비게이션이 작동하고 있음을 나타냅니다.
-- 만약 <Link href="/"> 대신 <a href="/">를 사용한다면, background color는 브라우저가 refresh 되면서 초기화될 것입니다.
+- 만약 Link href="/" 대신 a href="/" 를 사용한다면, background color는 브라우저가 refresh 되면서 초기화될 것입니다.
 
 <hr/>
 
@@ -120,20 +120,149 @@ Note
 - 만약 className과 같은 속성을 주고 싶으면 <Link>태그가 아닌, <a>태그 내부에 속성으로 className을 주면 됩니다.
 ```
 
-# Basic Features
+# 🖥 Assets, Metadata, and CSS
 
-## Pages
+- 이전 챕터까지는 styling이 없었기 때문에 지금부터 CSS 코드를 작성하여 페이지를 스타일링합니다.
+- nextjs는 CSS와 Sass를 지원합니다.
+- 이번 챕터에서는 nextjs가 다루는 고정적인 파일 (images, title 태그와 같은 page metadata)들에 대해 어떻게 다루는지 알 수 있습니다.
 
-## Data Fetching
+<hr/>
 
-## Built-in CSS Support
+⌨️ Assets
 
-## image Optimization
+- 시작으로는 images와 같은 정적인 파일들을 nextjs가 어떻게 다루는 지 이야기해봅시다.
+- nextjs는 images와 같은 정적인 파일들을 public 디렉토리를 통해 제공합니다.
+- 'public' 폴더 안에 들어있는 파일들은 'pages'와 유사하게 애플리케이션의 초기 값으로 참조(referenced)됩니다.
 
-## Static File Serving
+- pages/index 파일에 들어있는 favicon을 예로 들어봅시다.
 
-## Fast Refresh
+```js
+<img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
+```
 
-## TypeScript
+- vercel 이미지는 어플리케이션의 최상위 계층의 public 디렉토리에 존재합니다.
+- 따로 '/public' 이라는 경로를 설정하지 않아도 됩니다.
 
-## Environment Variables
+<hr/>
+
+⌨️ Metadata
+
+- 우리가 `<title>` 과 같은 페이지의 메타 데이터 테그를 확인하고 싶으면 어떻게 해야 할까?
+- `<title>` 태그는 `<head>` 태그의 일부이므로, 우리는 nextjs 페이지에서 `<head>` 태그를 통해 이 메타 데이터를 관리합니다.
+
+```
+import Head from 'next/head'
+```
+
+- 해당 명령어를 통해 nextjs에서 제공하는 Head 컴포넌트 모듈을 import 시킵니다.
+
+```js
+import Head from 'next/head';
+import Link from 'next/link';
+
+export default function FirstPost() {
+  return (
+    <>
+      <Head>
+        <title>First Post</title>
+      </Head>
+      <h1>First Post</h1>
+      <h2>
+        <Link href="/">
+          <a>Back to home</a>
+        </Link>
+      </h2>
+    </>
+  );
+}
+```
+
+- `<Head>` 컴포넌트를 사용하여 해당 페이지의 타이틀을 넣어줄 수 있습니다.
+
+<hr/>
+
+⌨️ Layout Component
+
+- 모든 페이지를 가로질러 공유할 수 있는 Layout 컴포넌트를 만들어 보자
+- components라고 불리는 디렉토리를 만듭니다.
+- 안에는 layout.js를 생성합니다.
+
+```js
+import styles from './layout.module.css';
+
+export default function Layout({ children }) {
+  return <div className={styles.container}>{children}</div>;
+}
+```
+
+- 후에 우리가 만든 first-post.js를 Layout 컴포넌트로 감싸줍니다.
+- Layout 컴포넌트 사이에 들어있는 코드를 children으로 받아와 styles안에 들어있는 container 속성을 적용시킵니다.
+
+```js
+import Head from 'next/head';
+import Link from 'next/link';
+import Layout from '../../components/layout';
+
+export default function FirstPost() {
+  return (
+    <Layout>
+      <Head>
+        <title>First Post</title>
+      </Head>
+      <h1>First Post</h1>
+      <h2>
+        <Link href="/">
+          <a>Back to home</a>
+        </Link>
+      </h2>
+    </Layout>
+  );
+}
+```
+
+- 우리는 Layout 컴포넌트에 몇가지 스타일들을 추가할 것입니다.
+- 그렇기 위해 우리는 리액트 컴포넌트에 CSS 파일들을 import 시킬 수 있도록 CSS Modules를 사용합니다.
+
+```
+Important: To use CSS Modules, the CSS file name must end with .module.css.
+```
+
+```js
+✔️<div id= "__next">
+  ✔️<div class="layout_container__2t4v2">
+```
+
+- CSS Modules를 사용하는 이유는 CSS Modules이 자동적으로 유니크한(중복이 없는) class names를 만들어주기 때문입니다.
+- 몇개의 CSS 모듈을 사용하던지 간에, class name의 중복을 걱정할 필요가 없습니다.
+- 게다가 nextjs의 코드 스플리팅의 특징은 CSS Modules에서 가장 잘 작동합니다.
+- CSS Modules는 각페이지에서 적용되는 가장적은 CSS의 양(amount)을 장담합니다.
+
+- 🌟CSS Modules는 빌드시에 자바스크립트 번들에서 추출될 수 있고, nextjs에 의해 자동적으로 css 파일이 로딩되도록 generate 합니다.🌟
+
+<hr/>
+
+⌨️ Global Styles
+
+- 만약 모든 페이지(pages)에 CSS가 로딩된 상태이기를 원한다면 global CSS 파일을 사용해야합니다.
+- pages 폴더 안에 `_app.js` 파일이 글로벌 스타일을 적용할 수 있는 파일입니다.
+
+```js
+import '../styles/globals.css';
+
+function MyApp({ Component, pageProps }) {
+  return <Component {...pageProps} />;
+}
+
+export default MyApp;
+```
+
+- nextjs에서, 너는 글로벌 CSS 파일을 `pages/_app.js`를 import 시켜 사용할 수 있습니다.
+- 하지만, 모든 곳에서 global CSS를 import할 수 있는 것은 아닙니다.
+- 왜냐하면 global CSS는 모든 페이지의 모든 요소에 영향을 줄 수 있기 때문입니다. (의도와 상관없이 모든 페이지에서 적용될 수 있음)
+- 만약, 너가 `post/first-post` 페이지로 가기 위해 홈페이지에서 navigate를 사용할 때, 홈페이지의 global styles가 `/posts/first-post`페이지에 의도치 않게 영향을 줄 수 있기 때문입니다.
+
+<hr/>
+
+⌨️ Polishing Layout
+
+⌨️ Styling Tips
