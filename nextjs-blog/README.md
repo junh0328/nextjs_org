@@ -45,8 +45,7 @@ next run dev
 
 - 우리는 이미 pages 디렉토리를 가지고 있기 때문에 post/first-post.js를 안에 만들고 확인해봅니다.
 
-<img width="400" alt="스크린샷 2021-01-27 오후 2 16 22" src="https://user-images.githubusercontentcom/
-54658162/105946380-8232b480-60aa-11eb-9c76-df1ed4087395.png">
+<img src="./image/firstpost.png"/>
 
 - 주소(localhost:3000/posts/first-post)에 따라 우리가 만든 함수가 렌더링된 것을 볼 수 있습니다.
 
@@ -266,3 +265,61 @@ export default MyApp;
 ⌨️ Polishing Layout
 
 ⌨️ Styling Tips
+
+# 🖥 Pre-rendering and Data Fetching
+
+- Pre-rendering은 Next.js에서 중요한 컨셉 중 하나입니다. 기본적으로, nextjs는 모든 페이지를 pre-render합니다.
+- <b>이는 nextjs가 client-side JavaScript로 모든 작업을 수행하는 대신 미리 각 페이지에 대해서 HTML을 만들어두는 것을</b>의미합니다.
+- 이렇게 만들어진 HTML은 해당 페이지에 적은 자바스크립트 코드와 연관됩니다.
+- 페이지가 브라우저에 로드될 때, 해당 자바스크립트 코드가 작동하고 완전한 인터렉티브 페이지가 되도록 만듭니다. 이를 <b>Hydration</b>이라고 합니다.
+- Reactjs에서 초기 로딩시, App에서 아무것도 안보이는 것과 달리 nextjs에서는 초기 로딩시 HTML 코드를 pre-render 시킬 수 있습니다.
+
+```
+Note: You can also try the above steps on localhost, but CSS won’t be loaded if you disable JavaScript.
+```
+
+<img src="./image/pre-render.png" title="preRender"/><br/>
+
+⌨️ Two Forms of Pre-rendering
+
+- nextjs의 Pre-rendering에는 두 가지 종류가 있습니다. Static Generation과 Server-side Rendering 입니다.
+- 이 둘의 차이는 언제 페이지를 위한 HTML을 만드는 지에 있습니다.
+
+🌟 Static Generation
+
+- Static Generation은 HTML을 빌드 타임에 생성한다. pre-render된 HTML은 그 다음에 각 리퀘스트에서 재사용된다.
+<p><img src="./image/static-generation.png" title="preRender"/></p>
+
+🌟 Server-side Rendering
+
+- Server-side Rendering은 HTML을 각 리퀘스트가 일어날 때 생성하는 방식이다.
+<p><img src="./image/server-side-rendering.png" title="preRender"/></p>
+
+⌨️ Per-page Basis
+
+- nextjs에서는 각 페이지당 어떤 처리방식으로 pre-rendering 할 것 인지를 개발자가 선택할 수 있습니다.
+
+<p><img src="./image/per-page-basis.png" title="preRender"/></p>
+
+⌨️ Static Generation vs Server-side Rendering vs client-side
+
+- 상황에 따라 써야하는 pre-rendering 방식이 다릅니다.
+- 그 중에서 데이터가 없을 때는 Static Generation을 추천합니다.
+- 왜냐면 페이지가 한번에 빌드 될 수 있고, 각 요청에 따라 페이지를 렌더하는데 속도가 빨라지기 때문입니다.
+- 유저의 요청보다 먼저 해당 페이지를 렌더할 수 있는가 질문했을때 대답이 그렇다면 Static Generation을 사용해야 합니다.
+
+- 반대로 유저의 요청보다 먼저 페이지가 렌더링되는 것이 좋지 않다면 Server-side Rendering을 사용해야 합니다.
+- 자주 데이터를 업데이트 한다거나, 매 요청마다 콘텐츠가 달라지는 경우가 있을 겁니다.
+- 렌더링 시간은 좀 더 걸리겠지만, 페이지는 항상 요청에 따른 업데이트가 되어 있을 것입니다.
+
+- 아니면 그냥 자주 업데이트되는 데이터를 사용하는 경우 pre-rendering을 하지 않고 client-side에서 자바스크립트를 사용하는 것도 방법이 될 수 있습니다.
+
+⌨️ Static Generation with and without Data
+
+- Static Generation은 데이터가 있는 경우, 없는 경우 둘다 사용됩니다.
+- So far(여태까지), 이전 챕터의 페이지들은 외부의 데이터(API, DataBase, ...)를 fetching할 필요가 없는 페이지들이였습니다.
+- 이러한 페이지들은 어플리케이션이 빌드될 대 자동으로 정적인 상태로 생성됩니다.
+- 하지만 몇몇의 페이지들은 외부 데이터를 fetching하지 않으면 렌더링될 수 없는 페이지들입니다.
+- 아를 해결하기 위해 Static Generation with data를 사용합니다.
+
+<p><img src="./image/static-generation-with-data.png" title="preRender"/></p>
