@@ -538,3 +538,188 @@ function Profile() {
   return <div> hello {data.name}! </div>;
 }
 ```
+
+# 🖥 Dynamic Routes
+
+⌨️ Page Path Depends on External Data
+
+- 이번 챕터에서는 외부데이터에 의존하는 각각의 page path에 대해 공부합니다.
+- nextjs는 외부데이터에 의존하는 경로를 가진 페이지들을 generate 하도록 것을 도와줍니다.
+
+<p><img width="70%" src="./image/page-path-external-data.png" title="preRender"/></p>
+
+🌟 How to Statically Generate Pages with Dynamic Routes
+
+- 우리는 다이나믹 라우팅을 통해 각 포스트가 `/posts/<id>`와 같은 주소를 갖기를 원합니다.
+- 그 주소는 posts 디렉토리 안에있는 마크다운(.md) 파일들의 이름입니다.
+- 이 다이나믹 라우팅 기능은 pages/posts 폴더의 하위 파일에 `[id].js`로 생성될 것입니다.
+- 이 `[ ]` 대괄호를 통해 다이나믹 라우팅을 nextjs에서 사용할 수 있습니다.
+
+- `[id].js` 파일에 Layout 컴포넌트를 추가합니다.
+
+```js
+import Layout from '../../components/layout';
+
+export default function Post() {
+  return <Layout>...</Layout>;
+}
+```
+
+- 후에 우리는 `getStaticPaths`라 불리는 함수를 이페이지에서 사용할 것입니다.
+- 이 함수는 `id`를 위한 possible values 배열을 리턴해야 합니다.
+
+```js
+import Layout from '../../components/layout';
+
+export default function Post() {
+  return <Layout>...</Layout>;
+}
+
+export async function getStaticPaths() {
+  // 여기에 id 를 위한 possible value의 배열을 리턴합니다.
+}
+```
+
+- 마지막으로, 우리는 향상된 (?) `getStaticProps`가 필요합니다.
+- 왜? blog post와 함께 주어진 `id`라는 반드시 필요한 데이터를 fetch하기 위해서!
+- `getStaticProps`는 `id`라는 파라미터를 가지고 있습니다
+- 왜 ? filename이 `[id].js`라서
+
+```js
+import Layout from '../../components/layout';
+
+export default function Post() {
+  return <Layout>...</Layout>;
+}
+
+export async function getStaticPaths() {
+  // 여기에 id 를 위한 possible value의 배열을 리턴합니다.
+}
+export async function getStaticProps({ params }) {
+  // Fetch necessary data for the blog post using params.id
+  // params.id 를 사용하여 블로그 포스트에서 필요한 데이터를 추출합니다.
+}
+```
+
+⌨️ Implement getStaticPaths
+
+- pages/posts 디렉토리 안에 `[id].js` 라는 다이나믹 라우팅을 할 파일을 만듭니다.
+- pages/post 폴더는 더이상 필요 없으므로 지워도 괜찮아요
+
+- 📁lib/posts.js에 해당 코드를 기존 코드 밑에 추가합니다.
+
+```js
+export function getAllPostIds() {
+  const fileNames = fs.readdirSync(postsDirectory); // postsDirectory는 같은 계층의 폴더인 posts 폴더를 나타냅니다.
+
+  // Returns an array that looks like this:
+  // [
+  //   {
+  //     params: {
+  //       id: 'ssg-ssr'
+  //     }
+  //   },
+  //   {
+  //     params: {
+  //       id: 'pre-rendering'
+  //     }
+  //   }
+  // ]
+  return fileNames.map((fileName) => {
+    return {
+      params: {
+        id: fileName.replace(/\.md$/, ''),
+      },
+    };
+  });
+}
+```
+
+- 중요한 것은 리턴되는 fileNames 배열은 매핑되면서 [ { ... }, { ... }]의 배열 형식으로 분리되는데, 반드시 파라미터로 id를 가져야 합니다.
+- id 가 없으면, `[id].js` 파일에서 파라미터로 이 키인 id를 받아오지 못해 `getStaticPaths`가 실패할 것입니다.
+
+- 마지막으로 `getAllPostIds()` 함수를 `[id].js` 파일에 import 해주세요
+
+```js
+import Layout from '../../components/layout';
+import { getAllPostIds } from '../../lib/posts';
+import { getStaticPaths } from '../../lib/posts';
+
+export async function getStaticPaths() {
+  const paths = getAllPostIds();
+  return {
+    paths, // getAllPostIds() 함수에 의해 리턴되는 path 배열을 가지고 있습니다. [{ id : pre-rendering },{ id: ssg-ssr } ]
+    fallback: false, // fallback 속성은 나중에 설명합니다.
+  };
+}
+
+export default function Post() {
+  return <Layout>...</Layout>;
+}
+```
+
+⌨️ Implement getStaticProps
+
+- 우리는 주어진 id 와 함께 필요한 데이터를 post에 렌더링해야 합니다.
+- 그러기 위해서 📁lib/posts.js 를 다시 열어 getPostData 함수를 추가해야 합니다.
+
+```js
+export function getPostData(id) {
+  const fullPath = path.join(postsDirectory, `${id}.md`);
+  const fileContents = fs.readFileSync(fullPath, 'utf8');
+
+  // gray-matter 라이브러리를 이용하여 metadata 섹션의 포스트를 추출합니다.
+  const matterResult = matter(fileContents);
+
+  // id와 추출한 데이터를 합칩니다.
+  return {
+    id,
+    ...matterResult.data,
+  };
+}
+```
+
+- 그리고 📁pages/posts/`[id].js` 파일을 다음과 같이 수정합니다.
+
+```js
+import Layout from '../../components/layout';
+import { getAllPostIds, getPostData } from '../../lib/posts';
+
+export default function Post({ postData }) {
+  console.log(postData);
+  return (
+    <Layout>
+      {postData.title}
+      <br />
+      {postData.id}
+      <br />
+      {postData.date}
+    </Layout>
+  );
+}
+export async function getStaticPaths() {
+  const paths = getAllPostIds();
+  return {
+    paths, // getAllPostIds() 함수에 의해 리턴되는 path 배열을 가지고 있습니다. [{ id : pre-rendering },{ id: ssg-ssr } ]
+    fallback: false, // fallback 속성은 나중에 설명합니다.
+  };
+}
+
+export async function getStaticProps({ params }) {
+  const postData = getPostData(params.id);
+  return {
+    props: {
+      postData,
+    },
+  };
+}
+```
+
+🌟 Summary
+
+<p><img width="70%" src="./image/how-to-dynamic-routes.png" title="preRender"/></p>
+
+전반적인 내용은 모두 다뤘습니다. !!!!! <br/>
+더 자세한 내용은 nextjs의 <a href="https://nextjs.org/docs/getting-started">API References</a>를 참고해 주세요
+
+다이나믹 라우팅을 더 간단하게 만들어 주는 useRouter와 같은 Hooks 들이 더 많이 있습니다.
