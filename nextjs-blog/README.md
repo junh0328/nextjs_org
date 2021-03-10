@@ -437,10 +437,12 @@ export default function Home({ allPostsData }) {
       </Head>
       <section className={utilStyles.headingMd}>
         <p>
-          Hello, I'm JunHee. I'm a front engineer. You can contact me on <a href="https://github.com/junh0328">github</a>
+          Hello, I'm JunHee. I'm a front engineer. You can contact me on{' '}
+          <a href="https://github.com/junh0328">github</a>
         </p>
         <p>
-          (This is a sample website - you’ll be building a site like this on <a href="https://nextjs.org/learn">our Next.js tutorial</a>.)
+          (This is a sample website - you’ll be building a site like this on{' '}
+          <a href="https://nextjs.org/learn">our Next.js tutorial</a>.)
         </p>
       </section>
       <section className={`${utilStyles.headingMd} ${utilStyles.padding1px}`}>
@@ -516,7 +518,26 @@ export async function getServerSideProps(context) {
 <p><img width="70%" src="./image/client-side-rendering.png" title="preRender"/></p>
 
 - 예를 들어 유저의 대쉬보드 페이지를 위해서는 이러한 접근법이 효과적입니다.
-- 왜냐하면 대쉬보드는 개인적이고, 유저 특화적인 페이지이기 때문에 SEO는 연관이 없고, 이 페이지는 pre-rendered 될 필요가 없기 때문입니다.
+- 왜냐하면 대쉬보드는 개인적이고, 유저 특화적인 페이지이기 때문에 SEO(Search Engine Optimization)는 연관이 없고, 이 페이지는 pre-rendered 될 필요가 없기 때문입니다.
+
+<h4>🌟 SEO(Search Engine Optimization)</h4>
+
+<p>SEO란, Search Engine Optimization의 약자로, 구글, 네이버와 같은 검색 엔진들은 서버에 등록된 웹사이트를 하나하나씩 돌아다니면서 웹사이트의 HTML 문서를 분석해줍니다. 이때 HTML에 사용된 태그를 바탕으로 사용자가 검색할 때 웹사이트를 빠르게 검색할 수 있게 도와줍니다. 하지만, CSR에서 사용되고있는 HTML의 body는 텅텅 비어 있다가, 사용자가 해당 도메인을 가진 페이지에 접근하면, 서버에서 js 밑 html 태그를 불러오는 형식이기 때문에 검색엔진을 통해 사용자가 입력하여 얻고자하는 정보를 입력했을때, 검색엔진이 우리의 웹 사이트에서 해당 내용을 캐치하는데 어려움이 있습니다.(why? html이 비어 있다가, 사용자가 해당 페이지에 접속하면 정보를 불러와 보여주는 형식이기 때문에). CSR 즉, 클라이언트 서버에서 html 및 js를 다루는 것 대신에, SSR을 사용하여 사전에 html 문서를 검색엔진이 찾을 수 있도록 제공하여 SEO를 향상시킬 수 있게 됩니다. SSR은 서버에서 필요한 데이터를 모두 가져와서 html 파일을 만들게 되고 이렇게 만들어진 HTML 파일을 일부 초기 세팅에 필요한 js와 함께 클라이언트 서버에 보내주게 됩니다. 그러면 클라이언트 측에서는 서버에서 만들어준 문서를 받아 와서 바로 사용자에게 보여줄 수 있게 되는 거죠. 이렇게 SSR을 사용하게 되면 사전에 HTML 문서를 클라이언트 측으로 전달했기 때문에, 페이지 로딩이 빨라지고, 검색엔진이 사용자의 요청에 따라 검색어를 찾을 때, 우리의 웹사이트에 해당 검색어가 포함되어 있다면 우리 페이지를 보여주는 효율적인 SEO가 될 수 있습니다. </p>
+
+<p>하지만 SSR이 CSR의 모든 문제점에 해결책이 되지는 않습니다. 서버에서 데이터를 사전에 받아오는 것이기 때문에 첫 번째로 blinking issue가 여전히 존재하고, 두 번째로 사용자가 증가함에 따라 서버는 더 많은 데이터를 가지고 와서 HTML을 만들어야 하므로 과부화가 올 수 있습니다. 마지막으로 사용자가 빠르게 웹사이트를 확인할 수는 있지만, js가 완전히 다운로드 되지 않은 상태에서 페이지의 여러 부분을 클릭하면, 작동이 되지 않는 부분이 존재할 것입니다.  </p>
+
+<h4>TTV(Time To View) , TTI(Time To Interact)</h4>
+
+<p>CSR은 사용자에게 보여짐과 동시에 모든 html과 js를 불러온 상태이기 때문에, TTV과 됨과 동시에 TTI 모든 동적인 행동을 할 수 있게 됩니다.</p>
+
+<p>하지만, SSR은 html과 일부 js파일은 서버로부터 사전에 받아 놓았기 때문에 TTV 상태에서도 TTI가 전부 활성화되어 있지는 않습니다.</p>
+
+<p>최종적으로 CSR을 많이 사용한다면, 우리가 최종적으로 번들링하여 사용자게에 보내주는 js 파일을 어떻게 하면 효율적으로 많이 분할하여 첫 번째로 사용자가 보기 위해서 필요한 정말 필수적인 html 요소만 보낼 수 있을지 고민해봐야 하고, SSR의 경우 사용자가 보고, 인터렉션(TTI)하는 이 시간의 단차를 줄이기 위해서 어떤 노력을 할 수 있을지 고민해봐야 합니다. 예를 들면 어떻게 하면 조금 더 매끄러운 UI와 UX를 제공할 수 있을지에 대한 고민들이 포함됩니다. </p>
+
+<p>요즘에는 SSR, CSR 뿐만 아니라 SSG(Static Site Generation)또한 렌더링 방법으로 등장하였습니다. SSG는 리액트를 예로 들면 'Gatsby' 또는 'Next'와 같은 라이브러리를 추가적으로 사용하여 렌더링을 하는 것인데, 웹페이지를 정적으로 미리 생성해두고, 서버에 배포해놓는 것입니다. SSG에서도 자바스크립트 파일을 html 파일과 함께 가지고 있을 수 있기 때문에, 동적인 요소도 충분히 추가할 수 있습니다. 
+Next에서는 SSR뿐만 아니라, static generation, no pre-rendering, pre-rendering상태를 모두 지원하기 때문에 리액트로 작업을 계속한다면 next.js를 배워보는 것도 매우 효과적일 겁니다.</p>
+
+<p>어떤 것이 최고다, 제일 낫다라는 판단 보다는 우리가 만들어야 하는 웹사이트 특성에 맞게 다양한 방식의 렌더링을 활용하여 페이지를 구성한다면 최선의 선택이 될 것입니다.</p>
 
 🌟 SWR
 
