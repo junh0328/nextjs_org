@@ -136,8 +136,8 @@ Summary
 
 ```
 Note
-- 만약 nextjs앱 외부에서 페이지에 링크를 주기 위해서는 <Link> 태그 없이 <a> 태그만 사용하면 됩니다.
-- 만약 className과 같은 속성을 주고 싶으면 <Link>태그가 아닌, <a>태그 내부에 속성으로 className을 주면 됩니다.
+만약 nextjs앱 외부에서 페이지에 링크를 주기 위해서는 <Link> 태그 없이 <a> 태그만 사용하면 됩니다.
+만약 className과 같은 속성을 주고 싶으면 <Link>태그가 아닌, <a>태그 내부에 속성으로 className을 주면 됩니다.
 ```
 
 <a href="https://github.com/vercel/next-learn-starter/blob/master/snippets/link-classname-example.js" target="_blank"> 예제 바로보기 </a>
@@ -154,7 +154,7 @@ Note
 
 - 시작으로는 images와 같은 정적인 파일들을 nextjs가 어떻게 다루는 지 이야기해봅시다.
 - nextjs는 images와 같은 정적인 파일들을 public 디렉토리를 통해 제공합니다.
-- 'public' 폴더 안에 들어있는 파일들은 'pages'와 유사하게 애플리케이션의 초기 값으로 참조(referenced)됩니다.
+- 위와 같은 정적인 파일들은 📁/public 디렉토리 안에 저장되는데, 이 프로그램의 📁/pages 디렉토리와 같은 역할이라고 볼 수 있습니다.
 
 - pages/index 파일에 들어있는 favicon을 예로 들어봅시다.
 
@@ -163,7 +163,14 @@ Note
 ```
 
 - vercel 이미지는 어플리케이션의 최상위 계층의 public 디렉토리에 존재합니다.
-- 따로 '/public' 이라는 경로를 설정하지 않아도 됩니다.
+- 따라서 src 속성에서 따로 '/public' 이라는 경로를 설정하지 않아도 됩니다.
+
+```
+Note
+오직 public 디렉토리에 들어있는 assets 들만이 빌드시에 next.js에 의해 제공됩니다
+```
+
+<a href="https://nextjs.org/docs/api-reference/next/image" target="_blank">next/image </a>에 대해 알아보기
 
 <hr/>
 
@@ -200,6 +207,16 @@ export default function FirstPost() {
 ```
 
 - `<Head>` 컴포넌트를 사용하여 해당 페이지의 타이틀을 넣어줄 수 있습니다.
+
+<hr/>
+
+⌨️ CSS Styling
+
+작성자(개인) 기준으로 스타일링은 빌트인 처리를 가장 많이 하는 것 같습니다.
+추가적으로 styled-component를 사용하고, useMemo() 훅 함수를 사용하여 대부분의 css를 관리하게 됩니다.
+빌트인 처리란 컴포넌트 요소 내부에 스타일링을 하는 것을 의미합니다.
+
+<a href="https://nextjs.org/docs/basic-features/built-in-css-support" target="_blank">빌트인 CSS 자세히 알아보기</a>
 
 <hr/>
 
@@ -267,6 +284,7 @@ Important: To use CSS Modules, the CSS file name must end with .module.css.
 
 - 만약 모든 페이지(pages)에 CSS가 로딩된 상태이기를 원한다면 global CSS 파일을 사용해야합니다.
 - pages 폴더 안에 `_app.js` 파일이 글로벌 스타일을 적용할 수 있는 파일입니다.
+- styles 폴더는 CNA (Create Next App) 시에 만들어지는 styles 폴더로 next.js에서 제공하는 기본적인 스타일링 요소들이 들어 있습니다.
 
 ```js
 import '../styles/globals.css';
@@ -278,7 +296,7 @@ function MyApp({ Component, pageProps }) {
 export default MyApp;
 ```
 
-- nextjs에서, 너는 글로벌 CSS 파일을 `pages/_app.js`를 import 시켜 사용할 수 있습니다.
+- next.js에서, 개발자는 글로벌 CSS 파일을 `pages/_app.js`를 import 시켜 사용할 수 있습니다.
 - 하지만, 모든 곳에서 global CSS를 import할 수 있는 것은 아닙니다.
 - 왜냐하면 global CSS는 모든 페이지의 모든 요소에 영향을 줄 수 있기 때문입니다. (의도와 상관없이 모든 페이지에서 적용될 수 있음)
 - 만약, 너가 `post/first-post` 페이지로 가기 위해 홈페이지에서 navigate를 사용할 때, 홈페이지의 global styles가 `/posts/first-post`페이지에 의도치 않게 영향을 줄 수 있기 때문입니다.
@@ -287,7 +305,7 @@ export default MyApp;
 
 ⌨️ Polishing Layout
 
-⌨️ Styling Tips
+⌨️ <a href="https://nextjs.org/learn/basics/assets-metadata-css/styling-tips" target="_blank">Styling Tips</a>
 
 # 🖥 Pre-rendering and Data Fetching
 
