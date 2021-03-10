@@ -799,7 +799,11 @@ export async function getStaticProps({ params }) {
 
 <hr/>
 
+## 읽어보면 좋은 자료
+
 🌟 <a href="https://nextjs.org/learn/excel/typescript/setup" target="_blank">next.js에 타입스크립트 적용하기</a>
+
+<h4><a href="https://medium.com/wantedjobs/%EC%9B%B9-%EC%84%B1%EB%8A%A5-%EC%B5%9C%EC%A0%81%ED%99%94-ssr-cache-%EC%A0%81%EC%9A%A9%EA%B8%B0-bf022e3a1a72"> 🌟 웹 성능 최적화 SSR + Cache 적용하기</a></h4>
 
 <h4>🌟 <a name="SEO">SEO(Search Engine Optimization)</a></h4>
 
