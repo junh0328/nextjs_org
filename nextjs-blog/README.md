@@ -309,32 +309,32 @@ export default MyApp;
 
 # 🖥 Pre-rendering and Data Fetching
 
-- Pre-rendering은 Next.js에서 중요한 컨셉 중 하나입니다. 기본적으로, nextjs는 모든 페이지를 pre-render합니다.
-- <b>이는 nextjs가 client-side JavaScript로 모든 작업을 수행하는 대신 미리 각 페이지에 대해서 HTML을 만들어두는 것을</b>의미합니다.
-- 이렇게 만들어진 HTML은 해당 페이지에 적은 자바스크립트 코드와 연관됩니다.
+- Pre-rendering은 Next.js에서 중요한 컨셉 중 하나입니다.
+- 기본적으로, nextjs는 모든 페이지를 pre-render합니다.
+- <b>이는 nextjs가 client-side JavaScript로 모든 작업을 수행하는 대신 미리 각 페이지에 대해서 HTML을 만들어두는 것을</b> 의미합니다.
+- 프리렌더링은 <a href="#SEO">SEO</a>와 퍼포먼스에 있어서 더 좋은 결과를 나타낼 수 있습니다.
+- 이렇게 만들어진 HTML은 해당 페이지에 최소한 자바스크립트 코드와 연관됩니다.
 - 페이지가 브라우저에 로드될 때, 해당 자바스크립트 코드가 작동하고 완전한 인터렉티브 페이지가 되도록 만듭니다. 이를 <b>Hydration</b>이라고 합니다.
-- Reactjs에서 초기 로딩시, App에서 아무것도 안보이는 것과 달리 nextjs에서는 초기 로딩시 HTML 코드를 pre-render 시킬 수 있습니다.
-
-```
-Note: You can also try the above steps on localhost, but CSS won’t be loaded if you disable JavaScript.
-```
+- Reactjs에서 초기 로딩시, App에서 아무것도 안보이는 것과 달리 next.js에서는 SSR설정을 텅헤 초기 로딩시 HTML 코드를 pre-render 시킬 수 있습니다.
 
 <img width="70%" src="./image/pre-render.png" title="preRender" /><br/>
 
 ⌨️ Two Forms of Pre-rendering
 
-- nextjs의 Pre-rendering에는 두 가지 종류가 있습니다. Static Generation과 Server-side Rendering 입니다.
+- nextjs의 Pre-rendering에는 두 가지 종류가 있습니다. <a href="https://nextjs.org/docs/basic-features/pages#static-generation-recommended" target="_blank">Static Generation과 </a> <a href="https://nextjs.org/docs/basic-features/pages#server-side-rendering" target="_blank">Server-side Rendering</a> 입니다.
+
 - 이 둘의 차이는 언제 페이지를 위한 HTML을 만드는 지에 있습니다.
 
 🌟 Static Generation
 
 - Static Generation은 HTML을 빌드 타임에 생성한다. pre-render된 HTML은 그 다음에 각 리퀘스트에서 재사용된다.
-<p><img width="70%" src="./image/static-generation.png" title="preRender"/></p>
+  <p><img width="70%" src="./image/static-generation.png" title="preRender"/></p>
 
 🌟 Server-side Rendering
 
 - Server-side Rendering은 HTML을 각 리퀘스트가 일어날 때 생성하는 방식이다.
-<p><img width="70%" src="./image/server-side-rendering.png" title="preRender"/></p>
+  > 사용자의 요청에 따라 요청에 부합되는 자료를 가져옴
+  <p><img width="70%" src="./image/server-side-rendering.png" title="preRender"/></p>
 
 ⌨️ Per-page Basis
 
@@ -346,7 +346,8 @@ Note: You can also try the above steps on localhost, but CSS won’t be loaded i
 
 - 상황에 따라 써야하는 pre-rendering 방식이 다릅니다.
 - 그 중에서 데이터가 없을 때는 Static Generation을 추천합니다.
-- 왜냐면 페이지가 한번에 빌드 될 수 있고, 각 요청에 따라 페이지를 렌더하는데 속도가 빨라지기 때문입니다.
+- 왜냐면 페이지가 한번에 빌드 될 수 있고 CDN에 의해 제공됩니다.
+- 따라서 각각의 페이지에 대한 사용자의 요청에 대해 렌더링하는 속도가 빠릅니다.
 - 유저의 요청보다 먼저 해당 페이지를 렌더할 수 있는가 질문했을때 대답이 그렇다면 Static Generation을 사용해야 합니다.
 
 - 반대로 유저의 요청보다 먼저 페이지가 렌더링되는 것이 좋지 않다면 Server-side Rendering을 사용해야 합니다.
@@ -359,7 +360,7 @@ Note: You can also try the above steps on localhost, but CSS won’t be loaded i
 
 - Static Generation은 데이터가 있는 경우, 없는 경우 둘다 사용됩니다.
 - So far(여태까지), 이전 챕터의 페이지들은 외부의 데이터(API, DataBase, ...)를 fetching할 필요가 없는 페이지들이였습니다.
-- 이러한 페이지들은 어플리케이션이 빌드될 대 자동으로 정적인 상태로 생성됩니다.
+- 이러한 페이지들은 어플리케이션이 빌드될 때, 자동으로 정적인 상태로 생성됩니다.
 - 하지만 몇몇의 페이지들은 외부 데이터를 fetching하지 않으면 렌더링될 수 없는 페이지들입니다.
 - 아를 해결하기 위해 Static Generation with data를 사용합니다.
 
@@ -393,6 +394,8 @@ Note: In development mode, `getStaticProps` runs on each request instead
       (개발 모드에서는 getStaticProps가 각 요청에 계속 실행됩니다.)
 ```
 
+<hr/>
+
 ⌨️ Blog Data
 
 - `getStaticProps`를 사용하여 외부 데이터를 불러오는 작업을 할 것입니다.
@@ -409,7 +412,7 @@ Note: In development mode, `getStaticProps` runs on each request instead
 
 ⌨️ Implement getStaticProps
 
-- 처음에 `gray-matter` 라이브러리를 다운받아, 각 마크다운 파일의 메타데이터를 추출(parse)할 수 있게 해줍니다.
+- 처음에 `gray-matter` 라이브러리를 다운받아, 각 마크다운 파일의 메타데이터를 파싱(parse)할 수 있게 해줍니다.
 - root directory에 📁lib 디렉토리를를 만들고, 그 안에 posts.js라는 파일을 만듭니다.
 
 ```js
@@ -511,11 +514,12 @@ export default function Home({ allPostsData }) {
 
 - `getStaticProps()` 를 사용하여 markdown files에 들어있는 metadata를 추출하여 이 데이터를 index.js/컴포넌트에 props 로 넘겨줘 사용하였습니다.
 - 이처럼 `getStaticProps()`는 정적으로 사용자에게 미리 외부 데이터를 불러와 보여줄 수 있습니다.
+  > 사용자의 요청에 의해 "'누구'의 데이터를 불러와줘" 같은 요청에 응답이 아닌, 미리 서버에서 만들어진 데이터(여기서는 .md 파일들)를 pre-render하는 것입니다.
 
 🌟 Development vs. Production
 
 - 개발 환경(`npm run dev` or `yarn dev`)에서, `getStaticProps`는 모든 요청에 작동합니다.
-- 배포모드(Production)에서, `getStiaticProps`는 빌드 타임에만 작동합니다. 그러나 이 행동은 `getStaticProps`에 의해 리턴되는 `fallback`키의 사용을 강화합니다.
+- 배포모드(Production)에서, `getStiaticProps`는 빌드 시에만 작동합니다. 그러나 이 행동은 `getStaticProps`에 의해 리턴되는 `fallback`키의 사용을 강화합니다.
 - 왜냐하면 빌드타임에만 작동한다는 것은, 너가 request time 동안에만이 데이터의 이용이 가능하기 때문입니다.
 
 🌟 What if I Need to Fetch Data at Request Time?
@@ -550,6 +554,32 @@ export async function getServerSideProps(context) {
 - 이 context를 통해 서버에 저장된 데이터를 불러와 사용자에 요청에 따라 렌더링을 해주는 것이 서버사이드렌더링입니다.
 - 하지만, `getStaticProps` 보다는 느릴 겁니다. 왜냐하면 서버는 무조건 모든 요청에 따라 결과물을 보내줘야 하고, 그 결과가 여분의 configuration 없이는 캐싱되지 않기 때문입니다.
 
+```js
+// 서버사이드 렌더링 예시 다이나믹 라우팅 페이지에서 user 정보를 가져오는 서바사이드 렌더링 구현하기
+
+export const getServerSideProps = wrapper.getServerSideProps(async (context) => {
+  const cookie = context.req ? context.req.headers.cookie : '';
+  axios.defaults.headers.Cookie = '';
+  if (context.req && cookie) {
+    axios.defaults.headers.Cookie = cookie;
+  }
+
+  // 기존의 리덕스 사가 함수의 사용법과 다르게 context를 사용하여 서버에 저장된 데이터를 불러옵니다
+
+  context.store.dispatch({
+    type: LOAD_USER_POSTS_REQUEST,
+    data: context.params.id,
+  });
+
+  context.store.dispatch(END);
+  await context.store.sagaTask.toPromise();
+
+  return { props: {} };
+});
+
+export default User;
+```
+
 🌟 Client-side Rendering
 
 - 만약 너가 데이터를 pre-render 할 필요가 없다면, 그냥 CSR 전략을 사용해도 됩니다.
@@ -561,7 +591,7 @@ export async function getServerSideProps(context) {
 - 예를 들어 유저의 대쉬보드 페이지를 위해서는 이러한 접근법이 효과적입니다.
 - 왜냐하면 대쉬보드는 개인적이고, 유저 특화적인 페이지이기 때문에 SEO(Search Engine Optimization)는 연관이 없고, 이 페이지는 pre-rendered 될 필요가 없기 때문입니다.
 
-<h4>🌟 SEO(Search Engine Optimization)</h4>
+<h4>🌟 <a name="SEO">SEO(Search Engine Optimization)</a></h4>
 
 <p>SEO란, Search Engine Optimization의 약자로, 구글, 네이버와 같은 검색 엔진들은 서버에 등록된 웹사이트를 하나하나씩 돌아다니면서 웹사이트의 HTML 문서를 분석해줍니다. 이때 HTML에 사용된 태그를 바탕으로 사용자가 검색할 때 웹사이트를 빠르게 검색할 수 있게 도와줍니다. 하지만, CSR에서 사용되고있는 HTML의 body는 텅텅 비어 있다가, 사용자가 해당 도메인을 가진 페이지에 접근하면, 서버에서 js 밑 html 태그를 불러오는 형식이기 때문에 검색엔진을 통해 사용자가 입력하여 얻고자하는 정보를 입력했을때, 검색엔진이 우리의 웹 사이트에서 해당 내용을 캐치하는데 어려움이 있습니다.(why? html이 비어 있다가, 사용자가 해당 페이지에 접속하면 정보를 불러와 보여주는 형식이기 때문에). CSR 즉, 클라이언트 서버에서 html 및 js를 다루는 것 대신에, SSR을 사용하여 사전에 html 문서를 검색엔진이 찾을 수 있도록 제공하여 SEO를 향상시킬 수 있게 됩니다. SSR은 서버에서 필요한 데이터를 모두 가져와서 html 파일을 만들게 되고 이렇게 만들어진 HTML 파일을 일부 초기 세팅에 필요한 js와 함께 클라이언트 서버에 보내주게 됩니다. 그러면 클라이언트 측에서는 서버에서 만들어준 문서를 받아 와서 바로 사용자에게 보여줄 수 있게 되는 거죠. 이렇게 SSR을 사용하게 되면 사전에 HTML 문서를 클라이언트 측으로 전달했기 때문에, 페이지 로딩이 빨라지고, 검색엔진이 사용자의 요청에 따라 검색어를 찾을 때, 우리의 웹사이트에 해당 검색어가 포함되어 있다면 우리 페이지를 보여주는 효율적인 SEO가 될 수 있습니다. </p>
 
